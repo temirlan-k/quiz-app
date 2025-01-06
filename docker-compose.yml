@@ -1,0 +1,66 @@
+services:
+  user_service:
+    build: ./user_service
+    ports:
+      - "9002:9002"
+    volumes:
+      - ./user_service/:/app
+    networks:
+      - quiz-net
+
+  quiz_service:
+    build: ./quiz_service
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./quiz_service/:/app
+    networks:
+      - quiz-net
+    depends_on:
+      - quiz_db
+
+  balance_service:
+    build: ./balance_service
+    ports:
+      - "9001:9001"
+    volumes:
+      - ./balance_service/:/app
+    networks:
+      - quiz-net
+    depends_on:
+      - balance_db
+
+  quiz_db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: quiz_user
+      POSTGRES_PASSWORD: quiz_password
+      POSTGRES_DB: quiz_db
+    ports:
+      - "5435:5432"
+    networks:
+      - quiz-net
+
+
+  balance_db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: balance_user
+      POSTGRES_PASSWORD: balance_password
+      POSTGRES_DB: balance_db
+    ports:
+      - "5436:5432"
+    networks:
+      - quiz-net
+
+
+
+
+
+
+
+
+
+networks:
+  quiz-net:
+    driver: bridge
