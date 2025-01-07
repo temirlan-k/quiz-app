@@ -16,16 +16,13 @@ class Quiz(Base,TimestampMixin):
         primary_key=True,
         index=True
     )
-    title: so.Mapped[str] = so.mapped_column(
-        sa.String(50),nullable=False
-    )
-    description: so.Mapped[str] = so.mapped_column(
-        sa.String(50),nullable=True
-    )
+
     is_active: so.Mapped[bool] = so.mapped_column(
         sa.Boolean, default=True
     )
     questions = so.relationship("Question", back_populates="quiz", cascade="all, delete-orphan")
+    localizations = so.relationship("QuizLocalization", back_populates="quiz", cascade="all, delete-orphan")
+    sessions = so.relationship("UserQuizSession", back_populates="quiz")
 
 
 class QuizLocalization(Base):

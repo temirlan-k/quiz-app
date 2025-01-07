@@ -1,0 +1,55 @@
+from typing import Dict
+from fastapi import HTTPException
+from src.core.enums import LanguageCode
+from src.repositories.quiz import IQuizRepository
+from src.core.uow import UnitOfWork
+import logging
+
+import logging
+
+logger = logging.getLogger("my_customer_logger")
+
+#### handler ####
+fileHandler = logging.FileHandler("my_log.log")
+consoleHandler = logging.StreamHandler()
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        fileHandler,
+        consoleHandler
+    ]
+)
+
+
+
+class QuizService:
+    
+    def __init__(self,uow:UnitOfWork):
+        self._uow = uow
+
+    async def create_quiz(self, quiz_data: Dict[list,dict]) -> dict:
+        async with self._uow as uow:
+            try:
+                quiz = await self._uow.quizzes_repo.create_quiz()
+                for loc in quiz_data.get('localizations'):
+                    quiz_loc = await self._uow.quizzes_repo.create_quiz_localization({
+                        'quiz_id':quiz.id,
+                        'language':loc.get('language'),
+                        'title':loc.get('title'),
+                        'description':loc.get('description')
+                    })
+                await uow.commit()
+                return quiz
+            except Exception as e:
+                logger.exception("Ошибка при создании Quiz")  
+                await uow.rollback()
+                raise e
+            
+    async def quizzes_list(self,offset:int,limit:int,x_language_code:LanguageCode):
+        async with self._uow as uow:
+            quizzes = await uow.quizzes_repo.get_all(x_language_code.value,offset,limit)
+            return {
+                "quizzes":quizzes,"count":len(quizzes)
+            }

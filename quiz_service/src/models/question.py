@@ -23,7 +23,6 @@ class Question(Base, TimestampMixin):
     question_type: so.Mapped[QuestionType] = so.mapped_column(
         sa.Enum(QuestionType), nullable=False
     )
-    content: so.Mapped[dict] = so.mapped_column(sa.JSON, nullable=False, default=dict)
     order: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=False, default=1)
 
     quiz = so.relationship("Quiz", back_populates="questions")
