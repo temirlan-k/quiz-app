@@ -1,7 +1,6 @@
 from dependency_injector import containers, providers
-from sqlalchemy.ext.asyncio import AsyncSession
+from src.services.user_answer import AnswerService
 from src.core.db import async_session_factory
-from src.repositories.quiz import QuizRepository
 from src.services.quiz import QuizService
 from src.services.question import QuestionService
 from src.core.uow import UnitOfWork
@@ -26,5 +25,10 @@ class Container(containers.DeclarativeContainer):
     )
     question_service = providers.Factory(
         QuestionService,
+        uow=uow
+    )
+    
+    answer_service = providers.Factory(
+        AnswerService,
         uow=uow
     )

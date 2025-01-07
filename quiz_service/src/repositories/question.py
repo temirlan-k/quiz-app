@@ -38,8 +38,19 @@ class QuestionRepository(IQuestionRepository):
             .where(QuestionLocalization.language == language)
             .options(joinedload(QuestionLocalization.question)) 
         )
-
+        
         return result.scalars().all()
+
+    async def get_localized_question(self,question_id: UUID,language_code:str)->QuestionLocalization|None:
+        result = await self.session.execute(
+            select(QuestionLocalization)
+            .join(Question, QuestionLocalization.question_id == Question.id)
+            .where(Question.id == question_id)
+            .where(QuestionLocalization.language == language_code)
+            .options(joinedload(QuestionLocalization.question)) 
+        )
+        return result.scalars().first()
+
 
 
     async def create_question(self, attributes: dict)-> Question:

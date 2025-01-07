@@ -1,9 +1,6 @@
 from typing import Dict
-from fastapi import HTTPException
 from src.core.enums import LanguageCode
-from src.repositories.quiz import IQuizRepository
 from src.core.uow import UnitOfWork
-import logging
 
 import logging
 

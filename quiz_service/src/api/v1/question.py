@@ -2,6 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends, Header
 from pydantic import UUID4
 from dependency_injector.wiring import inject, Provide
+from src.services.user_answer import AnswerService
 from src.core.enums import LanguageCode
 from src.services.question import QuestionService
 from src.schemas.requests.quiz import QuizCreateRequest
@@ -31,3 +32,13 @@ async def get_questions(
     question_service: QuestionService = Depends(Provide[Container.question_service])
 ):
     return await question_service.get_questions(quiz_id,x_language_code)
+
+
+@question_router.post("/{question_id}/answer")
+@inject
+async def answer_to_question(
+    question_id: UUID4,answer_request: dict,
+    x_language_code: LanguageCode = Header(...), x_user_id: UUID4 = Header(...),
+    answer_service: AnswerService = Depends(Provide[Container.answer_service])
+):
+    return await answer_service.answer_question(question_id,x_user_id,answer_request,x_language_code)

@@ -1,6 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.repositories.quiz import QuizRepository
 from src.repositories.question import QuestionRepository
+from src.repositories.user_attempt import UserAttemptRepository
+from src.repositories.user_quiz_session import UserQuizSessionRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 from contextlib import AbstractAsyncContextManager
 
@@ -13,6 +15,8 @@ class UnitOfWork(AbstractAsyncContextManager):
         self.session = self._session_factory()
         self.quizzes_repo = QuizRepository(self.session)
         self.question_repo = QuestionRepository(self.session)
+        self.user_attempt_repo = UserAttemptRepository(self.session)
+        self.user_quiz_session_repo = UserQuizSessionRepository(self.session)
         return self
     
     async def __aexit__(self, exc_type, exc_val, exc_tb):

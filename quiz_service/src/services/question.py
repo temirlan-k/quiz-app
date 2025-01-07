@@ -1,6 +1,4 @@
-from typing import List
 from uuid import UUID
-from fastapi import HTTPException
 from src.core.uow import UnitOfWork
 from src.schemas.requests.question import QuestionCreateRequest
 from src.core.exceptions.base import BadRequestException
@@ -29,10 +27,8 @@ class QuestionService:
                         "question_text": q_loc.question_text,
                         "content": q_loc.content.model_dump()
                     })
-
                 await uow.commit()
                 return question
-
             except Exception as e:
                 await uow.rollback()
                 raise e
@@ -48,8 +44,7 @@ class QuestionService:
                         "question_type":q.question.question_type,
                         "local_question_id":q.id,
                         "question_text":q.question_text,
-                        "answers":q.content.get('answers'),
-                        "hint":q.content.get('hint'),
+                        "content":q.content.get('public_data')
                     } for q in questions_list
                 ]
                 return res
