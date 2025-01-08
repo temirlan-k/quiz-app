@@ -21,3 +21,4 @@ class NotFoundException(CustomException):
     error_code = HTTPStatus.NOT_FOUND
     message = HTTPStatus.NOT_FOUND.description
 
+

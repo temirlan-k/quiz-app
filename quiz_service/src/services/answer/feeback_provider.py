@@ -11,8 +11,16 @@ class IFeedbackProvider(ABC):
 
 class SingleChoiceFeedbackProvider(IFeedbackProvider):
     def generate_feedback(self, question_l: QuestionLocalization) -> str:
-        correct_options = question_l.content.get("private_data", {}).get("correct_options", [])
-        return f"Wrong! Correct option(s): {', '.join(correct_options)}"
+        private_data = question_l.content.get("private_data", {})
+        public_data = question_l.content.get("public_data", {})
+        
+        correct_option_ids = private_data.get("correct_options", [])
+        
+        options = public_data.get("options", [])
+        correct_options = [
+            option["text"] for option in options if option["id"] in correct_option_ids
+        ]
+        return f"Wrong! Correct option(s): {', '.join(correct_options)} "
 
 class MultipleChoiceFeedbackProvider(IFeedbackProvider):
     def generate_feedback(self, question_l: QuestionLocalization) -> str:
@@ -41,6 +49,7 @@ class FeedbackProviderFactory:
     @classmethod
     def get_provider(cls, question_type: QuestionType) -> IFeedbackProvider:
         provider = cls._providers.get(question_type)
+        print(provider)
         if not provider:
             raise ValueError(f"No feedback provider for question type: {question_type}")
         return provider

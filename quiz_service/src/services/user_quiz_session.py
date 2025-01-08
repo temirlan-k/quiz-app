@@ -27,22 +27,59 @@ class UserQuizSessionService:
                 raise e
 
 
-    async def complete_quiz_session(self,user_id: UUID, session_id: UUID)->dict:
+    async def complete_quiz_session(self, user_id: UUID, session_id: UUID) -> dict:
         async with self._uow as uow:
             try:
-                quiz_session = await uow.user_quiz_session_repo.get_user_sessions(session_id)
-                if quiz_session is None or quiz_session.user_id != user_id:
+                user_quiz_session = await uow.user_quiz_session_repo.get_user_session(user_id, session_id)
+                if user_quiz_session is None or user_quiz_session.user_id != user_id:
                     raise NotFoundException("Session not found")
-                quiz_session.is_completed = True
-                quiz_session.ended_at = datetime.utcnow()
-                await uow.flush()
-                correct_questions = await uow.user_attempt_repo.get_correct_questions(session_id,user_id)
-                new_correct_question_count = 0
-                for q in correct_questions:
-                    was_answered_correctly_before = await uow.user_attempt_repo.check_correct_past(user_id,q.question_id,session_id)
+                if user_quiz_session.is_completed:
+                    raise BadRequestException("Session already completed")
+                
+
+                correct_attempts = await uow.user_attempt_repo.get_correct_attempts_by_question_in_session(
+                    session_id=session_id,
+                    user_id=user_id
+                )
+                balance_to_award = 0
+                counted_questions = set()
+                for attempt in correct_attempts:
+                    if attempt.question_id in counted_questions:
+                        continue
+
+                    # Check if this question was answered correctly in any previous session
+                    was_answered_correctly_before = await uow.user_attempt_repo.check_correct_past(
+                        user_id=user_id,
+                        question_id=attempt.question_id,
+                        current_session_id=session_id
+                    )
+
                     if not was_answered_correctly_before:
-                        new_correct_question_count += 1
-                return new_correct_question_count
+                        balance_to_award += 1
+                        counted_questions.add(attempt.question_id)
+
+
+                user_quiz_session.is_completed = True
+                user_quiz_session.ended_at = datetime.utcnow()
+
+                await uow.commit()
+                return {
+                    "session_id": session_id,
+                    "counted_questions": list(counted_questions),
+                    "balance_awarded": balance_to_award,
+                    "completion_time": user_quiz_session.ended_at
+                }
             except Exception as e:
                 await uow.rollback()
+                raise e
+
+
+    async def get_session_info(self, session_id:UUID,):
+        async with self._uow as uow:
+            try:
+                session =await uow.user_quiz_session_repo.get_by_id(session_id)
+                if session is None:
+                    raise NotFoundException('Session not found')
+                return session
+            except Exception as e:
                 raise e

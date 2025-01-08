@@ -3,6 +3,7 @@ from src.services.user_answer import AnswerService
 from src.core.db import async_session_factory
 from src.services.quiz import QuizService
 from src.services.question import QuestionService
+from src.services.user_quiz_session import UserQuizSessionService
 from src.core.uow import UnitOfWork
 
 
@@ -27,7 +28,10 @@ class Container(containers.DeclarativeContainer):
         QuestionService,
         uow=uow
     )
-    
+    quiz_session_service = providers.Factory(
+        UserQuizSessionService,
+        uow=uow
+    )
     answer_service = providers.Factory(
         AnswerService,
         uow=uow

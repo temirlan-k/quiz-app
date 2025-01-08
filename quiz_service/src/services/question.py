@@ -49,5 +49,4 @@ class QuestionService:
                 ]
                 return res
             except Exception as e:
-                await uow.rollback()
                 raise e

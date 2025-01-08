@@ -25,15 +25,21 @@ class UserQuizSessionRepository(IUserQuizSessionRepository):
     def __init__(self, session:AsyncSession):
         self.session = session
 
-    async def get_user_sessions(self, user_id:UUID)->UserQuizSession|None:
+    async def get_user_session(self, user_id: UUID, session_id: UUID)->UserQuizSession|None:
+        result = await self.session.execute(
+            select(UserQuizSession).where(UserQuizSession.user_id == user_id).where(UserQuizSession.id == session_id)
+        )
+        return result.scalars().first()
+
+    async def get_user_sessions(self, user_id:UUID)-> List[UserQuizSession]:
         result = await self.session.execute(
             select(UserQuizSession).where(UserQuizSession.user_id == user_id)
         )
-        return result.scalars().first()
+        return result.scalars().all()
     
     async def get_by_id(self, session_id:UUID)->UserQuizSession|None:
         result = await self.session.execute(
-            select(UserQuizSession).where(UserQuizSession.session_id == session_id)
+            select(UserQuizSession).where(UserQuizSession.id == session_id)
         )
         return result.scalars().first()
 

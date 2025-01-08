@@ -2,10 +2,10 @@ import enum
 
 
 class QuestionType(str, enum.Enum):
-    SINGLE_CHOICE = "single_choice"
-    FILL_BLANK = "fill_blank"
-    MULTIPLE_CHOICE = "multiple_choice"
-    MATCHING = "matching"
+    SINGLE_CHOICE = "SINGLE_CHOICE"
+    FILL_BLANK = "FILL_BLANK"
+    MULTIPLE_CHOICE = "MULTIPLE_CHOICE"
+    MATCHING = "MATCHING"
 
 
 class LanguageCode(str, enum.Enum):

@@ -40,6 +40,8 @@ services:
       - "5435:5432"
     networks:
       - quiz-net
+    volumes:
+        - postgres_data:/var/lib/postgresql/data
 
 
   balance_db:
@@ -60,7 +62,8 @@ services:
 
 
 
-
+volumes:
+  postgres_data:
 networks:
   quiz-net:
     driver: bridge

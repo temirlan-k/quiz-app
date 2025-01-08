@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 from fastapi import APIRouter, Depends, Header
 from pydantic import UUID4
 from dependency_injector.wiring import inject, Provide
@@ -37,7 +38,7 @@ async def get_questions(
 @question_router.post("/{question_id}/answer")
 @inject
 async def answer_to_question(
-    question_id: UUID4,answer_request: dict,
+    question_id: UUID,answer_request: dict,
     x_language_code: LanguageCode = Header(...), x_user_id: UUID4 = Header(...),
     answer_service: AnswerService = Depends(Provide[Container.answer_service])
 ):

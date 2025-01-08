@@ -19,7 +19,7 @@ class IQuestionRepository(Protocol):
 
     @abstractmethod
     async def create_question_localization(self,)-> QuestionLocalization: ...
-    
+
 
 class QuestionRepository(IQuestionRepository):
 
