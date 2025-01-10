@@ -1,86 +1,96 @@
-from typing import List, Protocol
 from abc import ABC, abstractmethod
+from typing import List, Protocol
 from uuid import UUID
 
 from sqlalchemy import and_, select
-from src.models.user_attempt import UserAttempt
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.core.enums import LanguageCode
+from src.models.user_attempt import UserAttempt
 
 
 class IUserAttemptRepository(Protocol):
 
     @abstractmethod
-    async def get_correct_questions(self,session_id:UUID, user_id:UUID)->List[UserAttempt]: ...
+    async def get_correct_questions(
+        self, session_id: UUID, user_id: UUID
+    ) -> List[UserAttempt]: ...
 
     @abstractmethod
-    async def check_correct_past(self,user_id: UUID,question_id:UUID, current_session_id: UUID)-> bool: ...
+    async def check_correct_past(
+        self, user_id: UUID, question_id: UUID, current_session_id: UUID
+    ) -> bool: ...
 
     @abstractmethod
-    async def create(self, attributes: dict)->UserAttempt: ...
+    async def create(self, attributes: dict) -> UserAttempt: ...
 
 
 class UserAttemptRepository:
 
-    def __init__(self,session:AsyncSession):
+    def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_correct_questions_(self,session_id:UUID, user_id:UUID)->List[UserAttempt]: 
-        result =  await self.session.execute(
+    async def get_correct_questions_(
+        self, session_id: UUID, user_id: UUID
+    ) -> List[UserAttempt]:
+        result = await self.session.execute(
             select(UserAttempt).where(
                 and_(
                     UserAttempt.user_id == user_id,
                     UserAttempt.session_id != session_id,
-                    UserAttempt.is_correct == True
+                    UserAttempt.is_correct == True,
                 )
             )
         )
         return result.scalars().all()
-    
-    async def check_correct_past(self, user_id: UUID, question_id: UUID, current_session_id: UUID) -> bool:
+
+    async def check_correct_past(
+        self, user_id: UUID, question_id: UUID, current_session_id: UUID
+    ) -> bool:
         result = await self.session.execute(
             select(UserAttempt).where(
                 and_(
                     UserAttempt.user_id == user_id,
                     UserAttempt.question_id == question_id,
                     UserAttempt.session_id != current_session_id,
-                    UserAttempt.is_correct == True
+                    UserAttempt.is_correct == True,
                 )
             )
         )
         return result.scalars().first() is not None
 
-    async def create(self,attributes:dict)->UserAttempt:
+    async def create(self, attributes: dict) -> UserAttempt:
         user_attempt = UserAttempt(**attributes)
         self.session.add(user_attempt)
         await self.session.flush()
         return user_attempt
-    
-    async def get_by_user_question_session(self,user_id:UUID,question_id:UUID,session_id:UUID,):
-        result =  await self.session.execute(
+
+    async def get_by_user_question_session(
+        self,
+        user_id: UUID,
+        question_id: UUID,
+        session_id: UUID,
+    ):
+        result = await self.session.execute(
             select(UserAttempt).where(
                 and_(
                     UserAttempt.user_id == user_id,
                     UserAttempt.question_id == question_id,
-                    UserAttempt.session_id == session_id
+                    UserAttempt.session_id == session_id,
                 )
             )
         )
         return result.scalars().first()
-    
- 
 
     async def get_correct_attempts_in_session(
-        self,
-        session_id: UUID,
-        user_id: UUID
+        self, session_id: UUID, user_id: UUID
     ) -> List[UserAttempt]:
         result = await self.session.execute(
             select(UserAttempt).where(
                 and_(
                     UserAttempt.user_id == user_id,
                     UserAttempt.session_id == session_id,
-                    UserAttempt.is_correct == True
+                    UserAttempt.is_correct == True,
                 )
             )
         )

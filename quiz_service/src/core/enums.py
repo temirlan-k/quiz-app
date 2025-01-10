@@ -17,5 +17,5 @@ class LanguageCode(str, enum.Enum):
     FR = "fr"
 
 
-class EventType(str,enum.Enum):
+class EventType(str, enum.Enum):
     QUIZ_COMPLETED = "QUIZ_COMPLETED"

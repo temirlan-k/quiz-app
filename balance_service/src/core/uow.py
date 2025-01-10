@@ -1,8 +1,9 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.asyncio import AsyncSession
 from contextlib import AbstractAsyncContextManager
-from src.repositories.balance import BalanceRepository
+
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.core.db import async_session_factory
+from src.repositories.balance import BalanceRepository
 
 
 class UnitOfWork(AbstractAsyncContextManager):
@@ -10,7 +11,6 @@ class UnitOfWork(AbstractAsyncContextManager):
         self._session_factory = session_factory
         self.session: AsyncSession | None = None
         self._registry_repository = {}
-
 
     async def __aenter__(self):
         self.session = self._session_factory()
@@ -29,4 +29,4 @@ class UnitOfWork(AbstractAsyncContextManager):
 
     async def rollback(self):
         if self.session:
-            await self.session.rollback
+            await self.session.rollback()
