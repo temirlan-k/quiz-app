@@ -15,4 +15,5 @@ async def current_user_balance(
     x_user_id: UUID = Header(...),
     balance_service: BalanceService = Depends(Provide[Container.balance_service]),
 ):
-    return await balance_service.award_balance(x_user_id, 100)
+    return await balance_service.my_balance(x_user_id)
+

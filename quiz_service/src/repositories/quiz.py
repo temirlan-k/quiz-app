@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Protocol
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.enums import LanguageCode
@@ -51,9 +51,7 @@ class QuizRepository(IQuizRepository):
         )
         return result.scalars().all()
 
-    async def create_quiz(
-        self,
-    ) -> Quiz | None:
+    async def create_quiz(self) -> Quiz | None:
         quiz = Quiz()
         self.session.add(quiz)
         await self.session.flush()
@@ -66,3 +64,4 @@ class QuizRepository(IQuizRepository):
         self.session.add(quiz_localization)
         await self.session.flush()
         return quiz_localization
+

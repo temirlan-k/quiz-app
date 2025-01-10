@@ -25,7 +25,6 @@ class QuizService:
                 await uow.commit()
                 return quiz
             except Exception as e:
-                logger.exception("Ошибка при создании Quiz")
                 await uow.rollback()
                 raise e
 

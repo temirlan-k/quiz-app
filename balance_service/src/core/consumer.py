@@ -20,8 +20,7 @@ class Consumer:
     async def connect_to_rabbit_mq(self):
         self.connection = await aiormq.connect("amqp://guest:guest@rabbitmq/")
         self.channel = await self.connection.channel(1)
-        print("-------------Connected to RabbitMQ from Balance--------------")
-        await self.channel.queue_declare(queue="quiz_completed_queue", passive=True)
+        await self.channel.queue_declare(queue="quiz_completed_queue",durable=True)
         await self.channel.basic_consume(
             queue="quiz_completed_queue", consumer_callback=self.handle_msg
         )

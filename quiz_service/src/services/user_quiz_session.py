@@ -20,10 +20,12 @@ class UserQuizSessionService:
     async def start_quiz_session(self, quiz_id: UUID, user_id: UUID):
         async with self._uow as uow:
             try:
+                total_questions = await uow.question_repo.count_questions(quiz_id)
                 new_session = await uow.user_quiz_session_repo.create(
                     {
                         "user_id": user_id,
                         "quiz_id": quiz_id,
+                        "total_questions":total_questions
                     }
                 )
                 await uow.commit()
@@ -47,14 +49,20 @@ class UserQuizSessionService:
                     uow, session_id, user_id
                 )
                 user_quiz_session.is_completed = True
-                user_quiz_session.ended_at = datetime.utcnow()
+                user_quiz_session.ended_at = datetime.now()
+                quiz_id = user_quiz_session.quiz_id
+                user_score = user_quiz_session.score 
+                max_streak = user_quiz_session.max_streak
 
+                percentile = await uow.user_quiz_session_repo.get_percentile_rank(quiz_id, user_score)
+                
                 await uow.commit()
                 response = {
                     "event_type": EventType.QUIZ_COMPLETED.value,
                     "session_id": str(session_id),
                     "user_id": str(user_id),
-                    "streak": 2,
+                    "max_streak": max_streak ,
+                    "percentile":percentile,
                     "new_correct_answers": new_correct_question_count,
                     "completion_time": str(user_quiz_session.ended_at),
                 }

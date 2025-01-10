@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Protocol
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -72,3 +72,9 @@ class QuestionRepository(IQuestionRepository):
         self.session.add(question_loc)
         await self.session.flush()
         return question_loc
+
+    async def count_questions(self, quiz_id: UUID) -> int:
+        result = await self.session.execute(
+            select(func.count()).select_from(Question).where(Question.quiz_id == quiz_id)
+        )
+        return result.scalar_one() or 0

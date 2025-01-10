@@ -10,15 +10,6 @@ services:
       - "15672:15672" 
     networks:
       - quiz-net
-      
-  user_service:
-    build: ./user_service
-    ports:
-      - "9002:9002"
-    volumes:
-      - ./user_service/:/app
-    networks:
-      - quiz-net
 
   quiz_service:
     build: ./quiz_service
@@ -26,6 +17,14 @@ services:
       - "9000:9000"
     volumes:
       - ./quiz_service/:/app
+    environment:
+      - DB_USER=quiz_user
+      - DB_PASSWORD=quiz_password
+      - DB_HOST=quiz_db
+      - DB_PORT=5432
+      - DB_NAME=quiz_db
+      - DEBUG=True
+
     networks:
       - quiz-net
     depends_on:
@@ -39,6 +38,13 @@ services:
       - "9001:9001"
     volumes:
       - ./balance_service/:/app
+    environment:
+      - DB_USER=balance_user
+      - DB_PASSWORD=balance_password
+      - DB_HOST=balance_db
+      - DB_PORT=5432
+      - DB_NAME=balance_db
+      - DEBUG=True
     networks:
       - quiz-net
     depends_on:

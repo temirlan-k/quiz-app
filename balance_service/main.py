@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -13,6 +14,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     container: Container = app.container
     consumer: Consumer = container.consumer()
     try:
+        await asyncio.sleep(5)
         await consumer.connect_to_rabbit_mq()
         yield
     finally:

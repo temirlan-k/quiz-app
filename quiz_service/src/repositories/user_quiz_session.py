@@ -2,8 +2,9 @@ from abc import ABC, abstractmethod
 from typing import List, Protocol
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from src.core.enums import LanguageCode
 from src.models.quiz_session import UserQuizSession
@@ -44,7 +45,11 @@ class UserQuizSessionRepository(IUserQuizSessionRepository):
 
     async def get_by_id(self, session_id: UUID) -> UserQuizSession | None:
         result = await self.session.execute(
-            select(UserQuizSession).where(UserQuizSession.id == session_id)
+            select(UserQuizSession)
+            .where(UserQuizSession.id == session_id)
+            .options(
+                joinedload(UserQuizSession.quiz)
+                )
         )
         return result.scalars().first()
 
@@ -53,3 +58,19 @@ class UserQuizSessionRepository(IUserQuizSessionRepository):
         self.session.add(user_quiz_session)
         await self.session.flush()
         return user_quiz_session
+
+
+    async def get_percentile_rank(self,quiz_id:UUID, user_score: float)-> float:
+        total_users = await self.session.execute(
+            select(func.count(func.distinct(UserQuizSession.user_id))).where(UserQuizSession.quiz_id == quiz_id)
+        )
+        total_users = total_users.scalar() or 0
+        
+        lower_users = await self.session.execute(
+            select(func.count(func.distinct(UserQuizSession.user_id))).where(UserQuizSession.quiz_id == quiz_id,UserQuizSession.score<user_score)
+        )
+        lower_users = lower_users.scalar() or 0
+        
+        if total_users == 0:
+            return 0.0
+        return (lower_users / total_users) * 100

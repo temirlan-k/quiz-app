@@ -6,6 +6,7 @@ from src.repositories.question import QuestionRepository
 from src.repositories.quiz import QuizRepository
 from src.repositories.user_attempt import UserAttemptRepository
 from src.repositories.user_quiz_session import UserQuizSessionRepository
+from src.models import initialize_test_data
 
 
 class UnitOfWork(AbstractAsyncContextManager):
@@ -34,3 +35,6 @@ class UnitOfWork(AbstractAsyncContextManager):
 
     async def rollback(self):
         await self.session.rollback()
+
+    async def init_test_data(self):
+        await initialize_test_data(self.session)
