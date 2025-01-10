@@ -33,6 +33,8 @@ class Consumer:
                 await self.balance_service.process_quiz_completion(
                     user_id=UUID(msg_json.get("user_id")),
                     correct_count=msg_json.get("new_correct_answers"),
+                    current_streak=msg_json.get("current_streak")
+                    
                 )
                 await message.channel.basic_ack(message.delivery.delivery_tag)
         except json.decoder.JSONDecodeError as e:

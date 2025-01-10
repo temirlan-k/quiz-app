@@ -6,7 +6,7 @@ from pydantic import UUID4
 
 from src.core.containers import Container
 from src.core.enums import LanguageCode
-from src.schemas.requests.question import QuestionCreateRequest
+from src.schemas.requests.question import QuestionCreateRequest,AnswerQuestionStandard,AnswerQuestionMatching
 from src.schemas.requests.quiz import QuizCreateRequest
 from src.services.question import QuestionService
 from src.services.quiz import QuizService
@@ -39,11 +39,25 @@ async def get_questions(
 @inject
 async def answer_to_question(
     question_id: UUID,
-    answer_request: dict,
+    answer_request: AnswerQuestionStandard,
     x_language_code: LanguageCode = Header(...),
     x_user_id: UUID4 = Header(...),
     answer_service: AnswerService = Depends(Provide[Container.answer_service]),
 ):
     return await answer_service.answer_question(
-        question_id, x_user_id, answer_request, x_language_code
+        question_id, x_user_id, answer_request.model_dump(), x_language_code
+    )
+
+
+@question_router.post("/{question_id}/answer-matching")
+@inject
+async def answer_to_question(
+    question_id: UUID,
+    answer_request: AnswerQuestionMatching,
+    x_language_code: LanguageCode = Header(...),
+    x_user_id: UUID4 = Header(...),
+    answer_service: AnswerService = Depends(Provide[Container.answer_service]),
+):
+    return await answer_service.answer_question(
+        question_id, x_user_id, answer_request.model_dump(), x_language_code
     )

@@ -9,21 +9,6 @@ from src.core.enums import LanguageCode
 from src.models.user_attempt import UserAttempt
 
 
-class IUserAttemptRepository(Protocol):
-
-    @abstractmethod
-    async def get_correct_questions(
-        self, session_id: UUID, user_id: UUID
-    ) -> List[UserAttempt]: ...
-
-    @abstractmethod
-    async def check_correct_past(
-        self, user_id: UUID, question_id: UUID, current_session_id: UUID
-    ) -> bool: ...
-
-    @abstractmethod
-    async def create(self, attributes: dict) -> UserAttempt: ...
-
 
 class UserAttemptRepository:
 

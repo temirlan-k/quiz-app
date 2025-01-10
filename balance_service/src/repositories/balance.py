@@ -8,11 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.models.balance import Balance
 
 
-class IBalanceRepository(Protocol):
-    async def get_balance(self, user_id: UUID) -> Balance: ...
-    async def update_balance(self, user_id: UUID, new_balance: float) -> None: ...
-    async def create(self, attributes: dict) -> Balance: ...
-
 
 class BalanceRepository:
     def __init__(self, session: AsyncSession):

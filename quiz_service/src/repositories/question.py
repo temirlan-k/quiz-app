@@ -9,23 +9,7 @@ from sqlalchemy.orm import joinedload
 from src.models.question import Question, QuestionLocalization
 
 
-class IQuestionRepository(Protocol):
-
-    @abstractmethod
-    async def get_by_id(self, id: UUID) -> Question | None: ...
-
-    @abstractmethod
-    async def create_question(
-        self,
-    ) -> Question: ...
-
-    @abstractmethod
-    async def create_question_localization(
-        self,
-    ) -> QuestionLocalization: ...
-
-
-class QuestionRepository(IQuestionRepository):
+class QuestionRepository:
 
     def __init__(self, session: AsyncSession) -> None:
         self.session = session

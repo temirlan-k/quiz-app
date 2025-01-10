@@ -9,26 +9,9 @@ from src.core.enums import LanguageCode
 from src.models.quiz import Quiz, QuizLocalization
 
 
-class IQuizRepository(Protocol):
-
-    @abstractmethod
-    async def get_by_id(self, id: UUID) -> Quiz | None: ...
-
-    @abstractmethod
-    async def get_all(
-        self,
-    ) -> List[Quiz]: ...
-
-    @abstractmethod
-    async def create_quiz(
-        self,
-    ) -> Quiz: ...
-
-    @abstractmethod
-    async def create_quiz_localization(self, attributes: dict) -> QuizLocalization: ...
 
 
-class QuizRepository(IQuizRepository):
+class QuizRepository:
 
     def __init__(self, session: AsyncSession) -> None:
         self.session = session

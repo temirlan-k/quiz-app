@@ -13,7 +13,7 @@ class UserAttempt(Base, TimestampMixin):
     __tablename__ = "user_attempts"
 
     id: so.Mapped[uuid.UUID] = so.mapped_column(
-        sa.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+        sa.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True
     )
     user_id: so.Mapped[uuid.UUID] = so.mapped_column(
         sa.UUID(as_uuid=True), nullable=False

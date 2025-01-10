@@ -5,10 +5,10 @@ from typing import List, Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
-from src.models import Base, TimestampMixin
+from src.models import Base
 
 
-class UserQuizSession(Base,TimestampMixin):
+class UserQuizSession(Base):
     __tablename__ = "user_quiz_sessions"
 
     id: so.Mapped[uuid.UUID] = so.mapped_column(

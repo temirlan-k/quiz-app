@@ -41,9 +41,9 @@ class AnswerService:
                     question_l.question.question_type
                 )
                 is_correct = checker.check_answer(
-                    question_l, 
+                    question_l, answer_content
                 )
-                await self._update_streak(user_quiz_session,is_correct)
+                await self._update_streak_and_score(user_quiz_session,is_correct)
 
                 attempt = await uow.user_attempt_repo.create(
                     {
@@ -68,7 +68,6 @@ class AnswerService:
                     "is_correct": attempt.is_correct,
                     "feedback": attempt_feedback,
                     "current_streak":user_quiz_session.current_streak,
-                    "max_streak":user_quiz_session.max_streak
                 }
             except Exception as e:
                 await uow.rollback()
@@ -85,9 +84,10 @@ class AnswerService:
         if existing_attempt:
             raise BadRequestException("You can't rewrite your choice")
 
-    async def _update_streak(self, user_quiz_session: UserQuizSession, is_correct: bool):
+    async def _update_streak_and_score(self, user_quiz_session: UserQuizSession, is_correct: bool):
         if is_correct:
             user_quiz_session.current_streak += 1
+            user_quiz_session.score += 1
             if user_quiz_session.current_streak > user_quiz_session.max_streak:
                 user_quiz_session.max_streak = user_quiz_session.current_streak
         else:

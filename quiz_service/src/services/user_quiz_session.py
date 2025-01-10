@@ -28,6 +28,7 @@ class UserQuizSessionService:
                         "total_questions":total_questions
                     }
                 )
+                print(new_session)
                 await uow.commit()
                 return new_session
             except Exception as e:
@@ -52,21 +53,22 @@ class UserQuizSessionService:
                 user_quiz_session.ended_at = datetime.now()
                 quiz_id = user_quiz_session.quiz_id
                 user_score = user_quiz_session.score 
-                max_streak = user_quiz_session.max_streak
-
+                current_streak = user_quiz_session.current_streak
+                await uow.flush()
                 percentile = await uow.user_quiz_session_repo.get_percentile_rank(quiz_id, user_score)
-                
-                await uow.commit()
+                print(percentile)
+                print(user_score,11)
                 response = {
                     "event_type": EventType.QUIZ_COMPLETED.value,
                     "session_id": str(session_id),
                     "user_id": str(user_id),
-                    "max_streak": max_streak ,
+                    "current_streak": current_streak ,
                     "percentile":percentile,
+                    "score":user_quiz_session.score,
                     "new_correct_answers": new_correct_question_count,
-                    "completion_time": str(user_quiz_session.ended_at),
                 }
                 await self.publisher.publish_event(event_payload=response)
+                await uow.commit()
                 return response
             except Exception as e:
                 await uow.rollback()

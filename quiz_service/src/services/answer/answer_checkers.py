@@ -22,7 +22,6 @@ class SingleChoiceChecker(IAnswerChecker):
             "correct_options", []
         )
         user_option = user_answer_data.get("selected_option")
-        print(correct_options)
         return user_option == correct_options
 
 
@@ -50,12 +49,9 @@ class MultipleChoiceChecker(IAnswerChecker):
         correct_options = question_l.content.get("private_data", {}).get(
             "correct_options", []
         )
-        print(correct_options)
         user_selected = user_answer_data.get("selected_option", [])
-        print(user_selected)
         normalized_user = set(str(opt).strip().lower() for opt in user_selected)
         normalized_db_correct = set(str(opt).strip().lower() for opt in correct_options)
-        print(normalized_db_correct, normalized_user)
         if (normalized_db_correct) == (normalized_user):
             return True
         return False
@@ -70,9 +66,6 @@ class MatchingChecker(IAnswerChecker):
             user_matches = user_answer_data.get("selected_option").get("matches", [])
             if not user_matches or len(user_matches) != len(correct_pairs):
                 raise BadRequestException("You should match all pairs")
-            print("CORRECT", correct_pairs)
-            print("USER", user_matches)
-            print(user_matches is correct_pairs)
             return self._normalize_pairs(user_matches) == self._normalize_pairs(
                 correct_pairs
             )

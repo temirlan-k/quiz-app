@@ -10,19 +10,7 @@ from src.core.enums import LanguageCode
 from src.models.quiz_session import UserQuizSession
 
 
-class IUserQuizSessionRepository(Protocol):
-
-    @abstractmethod
-    async def get_user_sessions(self, user_id: UUID) -> UserQuizSession | None: ...
-
-    @abstractmethod
-    async def get_by_id(self, session_id) -> UserQuizSession | None: ...
-
-    @abstractmethod
-    async def create(self, attributes: dict) -> UserQuizSession: ...
-
-
-class UserQuizSessionRepository(IUserQuizSessionRepository):
+class UserQuizSessionRepository:
 
     def __init__(self, session: AsyncSession):
         self.session = session

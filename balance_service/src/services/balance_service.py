@@ -18,9 +18,16 @@ class BalanceService:
             except Exception as e:
                 raise e
 
-    async def process_quiz_completion(self, user_id: UUID, correct_count: int) -> None:
-        points = correct_count * 100
-        await self.award_balance(user_id, points)
+    async def process_quiz_completion(self, user_id: UUID, correct_count: int, current_streak:int) -> None:
+        base_point = correct_count * 100
+        
+        if current_streak > 0:
+            streak_bonus = base_point * (1 + (current_streak - 1) * 0.1)
+        else:
+            streak_bonus = 0 
+        
+        total_points = base_point + streak_bonus
+        await self.award_balance(user_id, total_points)
 
     async def award_balance(self, user_id: UUID, amount: float) -> None:
         async with self._uow as uow:
@@ -32,11 +39,9 @@ class BalanceService:
                         {"user_id": user_id, "balance": amount}
                     )
                 else:
-                    new_balance = balance.balance + amount
+                    new_balance = float(balance.balance) + float(amount)
                     await uow.balance_repo.update_balance(user_id, new_balance)
 
                 await uow.commit()
-                return new_balance
             except Exception as e:
-                await uow.rollback()
                 raise e
