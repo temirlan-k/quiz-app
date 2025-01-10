@@ -25,7 +25,7 @@ class UserAttemptRepository:
     def __init__(self,session:AsyncSession):
         self.session = session
 
-    async def get_correct_questions(self,session_id:UUID, user_id:UUID)->List[UserAttempt]: 
+    async def get_correct_questions_(self,session_id:UUID, user_id:UUID)->List[UserAttempt]: 
         result =  await self.session.execute(
             select(UserAttempt).where(
                 and_(
@@ -68,13 +68,20 @@ class UserAttemptRepository:
         )
         return result.scalars().first()
     
-    async def get_correct_attempts_by_question_in_session(self, user_id: UUID, session_id: UUID) -> List[UserAttempt]:
-        result = await self.session.execute(select(UserAttempt).where(
-            and_(
-                UserAttempt.user_id == user_id,
-                UserAttempt.session_id == session_id,
-                UserAttempt.is_correct == True
-            )
-        ))
-        return result.scalars().all()
+ 
 
+    async def get_correct_attempts_in_session(
+        self,
+        session_id: UUID,
+        user_id: UUID
+    ) -> List[UserAttempt]:
+        result = await self.session.execute(
+            select(UserAttempt).where(
+                and_(
+                    UserAttempt.user_id == user_id,
+                    UserAttempt.session_id == session_id,
+                    UserAttempt.is_correct == True
+                )
+            )
+        )
+        return result.scalars().all()

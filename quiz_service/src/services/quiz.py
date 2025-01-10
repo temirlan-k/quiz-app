@@ -2,25 +2,6 @@ from typing import Dict
 from src.core.enums import LanguageCode
 from src.core.uow import UnitOfWork
 
-import logging
-
-logger = logging.getLogger("my_customer_logger")
-
-#### handler ####
-fileHandler = logging.FileHandler("my_log.log")
-consoleHandler = logging.StreamHandler()
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        fileHandler,
-        consoleHandler
-    ]
-)
-
-
-
 class QuizService:
     
     def __init__(self,uow:UnitOfWork):

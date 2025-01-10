@@ -5,6 +5,7 @@ from src.services.quiz import QuizService
 from src.services.question import QuestionService
 from src.services.user_quiz_session import UserQuizSessionService
 from src.core.uow import UnitOfWork
+from src.services.rabbit_mq import RMQEventPublisher
 
 
 class Container(containers.DeclarativeContainer):
@@ -19,6 +20,7 @@ class Container(containers.DeclarativeContainer):
         session_factory=db_session_factory
     )
     
+    rmq_publisher = providers.Singleton(RMQEventPublisher)
     
     quiz_service = providers.Factory(
         QuizService,
@@ -30,7 +32,8 @@ class Container(containers.DeclarativeContainer):
     )
     quiz_session_service = providers.Factory(
         UserQuizSessionService,
-        uow=uow
+        uow=uow,
+        publisher=rmq_publisher
     )
     answer_service = providers.Factory(
         AnswerService,
