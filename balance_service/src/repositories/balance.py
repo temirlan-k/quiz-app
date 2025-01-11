@@ -1,4 +1,3 @@
-from typing import Protocol
 from uuid import UUID
 
 from sqlalchemy import select, update
@@ -20,8 +19,7 @@ class BalanceRepository:
             )
             return result.scalar_one_or_none()
         except SQLAlchemyError as e:
-            print(f"Database error in get_balance: {e}")
-            raise
+            raise e
 
     async def create(self, attributes: dict) -> Balance:
         try:
@@ -29,8 +27,7 @@ class BalanceRepository:
             self.session.add(balance)
             return balance
         except SQLAlchemyError as e:
-            print(f"Database error in create: {e}")
-            raise
+            raise e
 
     async def update_balance(self, user_id: UUID, new_balance: float) -> None:
         try:
@@ -40,5 +37,4 @@ class BalanceRepository:
                 .where(Balance.user_id == user_id)
             )
         except SQLAlchemyError as e:
-            print(f"Database error in update_balance: {e}")
             raise e

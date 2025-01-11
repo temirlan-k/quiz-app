@@ -1,6 +1,4 @@
-# src/services/feedback_providers.py
 from abc import ABC, abstractmethod
-from typing import Dict
 
 from src.core.enums import QuestionType
 from src.models.question import QuestionLocalization

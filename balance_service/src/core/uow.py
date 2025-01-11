@@ -2,7 +2,6 @@ from contextlib import AbstractAsyncContextManager
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.db import async_session_factory
 from src.repositories.balance import BalanceRepository
 
 

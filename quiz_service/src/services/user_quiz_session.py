@@ -1,14 +1,14 @@
+import logging
 from datetime import datetime
-from typing import List
 from uuid import UUID
 
-from fastapi import HTTPException
-
 from src.core.enums import EventType
-from src.core.exceptions.base import BadRequestException, NotFoundException
+from src.core.exceptions import BadRequestException, NotFoundException
 from src.core.uow import UnitOfWork
-from src.schemas.requests.question import QuestionCreateRequest
 from src.services.rabbit_mq import RMQEventPublisher
+from src.models.quiz_session import UserQuizSession
+
+logger = logging.getLogger(__name__)
 
 
 class UserQuizSessionService:
@@ -17,7 +17,7 @@ class UserQuizSessionService:
         self._uow = uow
         self.publisher = publisher
 
-    async def start_quiz_session(self, quiz_id: UUID, user_id: UUID):
+    async def start_quiz_session(self, quiz_id: UUID, user_id: UUID)->UserQuizSession:
         async with self._uow as uow:
             try:
                 total_questions = await uow.question_repo.count_questions(quiz_id)
@@ -28,10 +28,10 @@ class UserQuizSessionService:
                         "total_questions":total_questions
                     }
                 )
-                print(new_session)
                 await uow.commit()
                 return new_session
             except Exception as e:
+                logger.error(f"Error starting quiz session: {e}", exc_info=True)
                 await uow.rollback()
                 raise e
 
@@ -43,21 +43,20 @@ class UserQuizSessionService:
                 )
                 if user_quiz_session is None or user_quiz_session.user_id != user_id:
                     raise NotFoundException("Session not found")
-                # if user_quiz_session.is_completed:
-                #     raise BadRequestException("Session already completed")
+                if user_quiz_session.is_completed:
+                    raise BadRequestException("Session already completed")
 
                 new_correct_question_count = await self._calculate_correct_questions(
                     uow, session_id, user_id
                 )
+
                 user_quiz_session.is_completed = True
                 user_quiz_session.ended_at = datetime.now()
                 quiz_id = user_quiz_session.quiz_id
                 user_score = user_quiz_session.score 
                 current_streak = user_quiz_session.current_streak
-                await uow.flush()
+
                 percentile = await uow.user_quiz_session_repo.get_percentile_rank(quiz_id, user_score)
-                print(percentile)
-                print(user_score,11)
                 response = {
                     "event_type": EventType.QUIZ_COMPLETED.value,
                     "session_id": str(session_id),
@@ -71,13 +70,14 @@ class UserQuizSessionService:
                 await uow.commit()
                 return response
             except Exception as e:
+                logger.error(f"Error completing quiz session: {e}", exc_info=True)
                 await uow.rollback()
                 raise e
 
     async def get_session_info(
         self,
         session_id: UUID,
-    ):
+    )-> UserQuizSession:
         async with self._uow as uow:
             try:
                 session = await uow.user_quiz_session_repo.get_by_id(session_id)
@@ -85,11 +85,12 @@ class UserQuizSessionService:
                     raise NotFoundException("Session not found")
                 return session
             except Exception as e:
+                logger.error(f"Error getting session info: {e}", exc_info=True)
                 raise e
 
     async def _calculate_correct_questions(
         self, uow: UnitOfWork, session_id: UUID, user_id: UUID
-    ):
+    )-> int:
         correct_attempts = await uow.user_attempt_repo.get_correct_attempts_in_session(
             session_id=session_id, user_id=user_id
         )

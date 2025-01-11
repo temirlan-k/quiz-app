@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from src.core.uow import UnitOfWork
-from src.core.exceptions.base import BadRequestException
+from src.core.exceptions import BadRequestException
 
 
 class BalanceService:

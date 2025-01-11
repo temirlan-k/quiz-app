@@ -33,9 +33,6 @@ class UserQuizSession(Base):
     score: so.Mapped[int] = so.mapped_column(
         sa.Integer, default=0, nullable=False
     )
-    bonus_questions:so.Mapped[int] = so.mapped_column(
-        sa.Integer, default=0, nullable=False
-    )
     total_questions: so.Mapped[int] = so.mapped_column(
         sa.Integer, default=0, nullable=False
     )

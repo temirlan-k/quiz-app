@@ -1,15 +1,15 @@
-from datetime import datetime
-from typing import List
+import logging
 from uuid import UUID
 
-from src.core.enums import QuestionType
-from src.core.exceptions.base import BadRequestException, NotFoundException
+from src.core.exceptions import BadRequestException, NotFoundException
 from src.core.uow import UnitOfWork
-from src.models.question import Question, QuestionLocalization
-from src.schemas.requests.question import QuestionCreateRequest
+from src.models.question import QuestionLocalization
 from src.services.answer.answer_checkers import AnswerCheckerFactory
 from src.services.answer.feeback_provider import FeedbackProviderFactory
 from src.models.quiz_session import UserQuizSession
+
+logger = logging.getLogger(__name__)
+
 
 class AnswerService:
 
@@ -17,12 +17,17 @@ class AnswerService:
         self._uow = uow
 
     async def answer_question(
-        self, question_id: UUID, user_id: UUID, answer_request: dict, language_code: str
-    ):
+        self, 
+        question_id: UUID, 
+        user_id: UUID, 
+        answer_request: dict, 
+        language_code: str
+    )->dict:
         async with self._uow as uow:
             try:
                 session_id = answer_request.get("session_id")
                 answer_content = answer_request.get("answer_content")
+
                 user_quiz_session = await uow.user_quiz_session_repo.get_by_id(session_id)
                 if not user_quiz_session:
                     raise NotFoundException("Session not found")
@@ -43,6 +48,7 @@ class AnswerService:
                 is_correct = checker.check_answer(
                     question_l, answer_content
                 )
+
                 await self._update_streak_and_score(user_quiz_session,is_correct)
 
                 attempt = await uow.user_attempt_repo.create(
@@ -55,6 +61,7 @@ class AnswerService:
                         "is_correct": is_correct,
                     }
                 )
+
                 attempt_feedback = "Correct!"
                 if not is_correct:
                     provider = FeedbackProviderFactory.get_provider(
@@ -70,12 +77,13 @@ class AnswerService:
                     "current_streak":user_quiz_session.current_streak,
                 }
             except Exception as e:
+                logger.error(f"Error in answer_question: {e}", exc_info=True)
                 await uow.rollback()
                 raise e
 
     async def _check_repeat_attempts(
         self, uow: UnitOfWork, question_l: QuestionLocalization, user_id, answer_request: dict
-    ):
+    )-> None:
         existing_attempt = await uow.user_attempt_repo.get_by_user_question_session(
             user_id,
             question_l.question.id,
@@ -84,7 +92,7 @@ class AnswerService:
         if existing_attempt:
             raise BadRequestException("You can't rewrite your choice")
 
-    async def _update_streak_and_score(self, user_quiz_session: UserQuizSession, is_correct: bool):
+    async def _update_streak_and_score(self, user_quiz_session: UserQuizSession, is_correct: bool)->None:
         if is_correct:
             user_quiz_session.current_streak += 1
             user_quiz_session.score += 1

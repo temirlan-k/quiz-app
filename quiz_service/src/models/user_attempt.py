@@ -5,7 +5,6 @@ from typing import List, Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
-from src.core.enums import LanguageCode
 from src.models import Base, TimestampMixin
 
 

@@ -13,4 +13,4 @@ COPY . .
 
 EXPOSE 9001
 
-CMD ["python","main.py"]
+CMD ["sh", "-c", "alembic upgrade head && python main.py"]

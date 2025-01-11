@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Dict
-from uuid import UUID
 
 from src.core.enums import QuestionType
-from src.core.exceptions.base import BadRequestException
+from src.core.exceptions import BadRequestException
 from src.models.question import QuestionLocalization
 
 
