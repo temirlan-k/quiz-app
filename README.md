@@ -144,7 +144,7 @@ Follow these steps to initiate a quiz session, answer questions, and complete th
      - **Request Example:**
        ```json
        {
-         "session_id": "abcdef12-3456-7890-abcd-ef1234567890",
+         "session_id": "YOUR SESSION ID",
          "answer_content": {
            "selected_option": ["opt1"]
          }
@@ -170,7 +170,7 @@ Follow these steps to initiate a quiz session, answer questions, and complete th
      - **Request Example:**
        ```json
        {
-         "session_id": "abcdef12-3456-7890-abcd-ef1234567890",
+         "session_id": "YOUR SESSION ID",
          "answer_content": {
             "selected_option":{
             "matches": [
@@ -219,28 +219,6 @@ Follow these steps to initiate a quiz session, answer questions, and complete th
        "new_correct_answers": 2
      }
      ```
-
----
-
-### Additional Recommendations
-
-- **Consistent Headers:**  
-  Ensure that all requests include the necessary headers (`x-user-id` and `x-language-code`) to maintain consistency and proper localization.
-
-- **Session Management:**  
-  Keep track of the `session_id` returned when starting a session, as it is required for submitting answers and finishing the session.
-
-- **Error Handling:**  
-  Handle potential errors gracefully by checking responses and implementing retry logic if necessary, especially when interacting with external services like RabbitMQ.
-
-- **Logging and Monitoring:**  
-  Monitor your application's logs to track user progress, detect issues early, and ensure that all components are functioning as expected.
-
-- **Security Considerations:**  
-  Protect your endpoints by implementing proper authentication and authorization mechanisms to ensure that only authorized users can start sessions, submit answers, and finish sessions.
-
-By following these steps and recommendations, you can effectively manage quiz sessions, provide meaningful feedback to users, and maintain accurate user balances within your application.
-
 
 
 ## Architecture 
