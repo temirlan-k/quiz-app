@@ -221,7 +221,7 @@ Follow these steps to initiate a quiz session, answer questions, and complete th
      ```
 
 
-## Architecture 
+## Architecture Diagram (Example)
 ![alt text](image-arch.png)
 
 
