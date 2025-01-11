@@ -1,15 +1,44 @@
 # Quiz App Backend
 
 ## Introduction
-Welcome to the Quiz Service! This project is a microservice-based application designed to manage quizzes, handle user interactions, and maintain user balances. It leverages FastAPI for building high-performance APIs, SQLAlchemy for database interactions, and RabbitMQ for asynchronous event handling.
-## Features ✅
+Welcome to the Quiz APP! This project is a microservice-based application designed to manage quizzes, handle user interactions, and maintain user balances. It leverages FastAPI for building high-performance APIs, SQLAlchemy for database interactions, and RabbitMQ for asynchronous event handling.
+## Business Logic in Brief
 
-- Quiz Management: Create and manage quizzes with multiple localizations.
-- Answer Processing: Handle user answers, validate them, and update user streaks.
-- Balance Management: Award users based on their performance and maintain their balances.
-- Event Handling: Listen to RabbitMQ events to process quiz completions.
-- Dependency Injection: Manage dependencies efficiently using dependency_injector.
-- Conclusion: I think all 3 tasks have been completed ✅
+- **Streak Calculation:**  
+  Tracks consecutive correct answers; the streak increases with each correct answer, resets on mistakes, and influences bonus calculation.
+  - On each correct answer, `current_streak` is incremented and `max_streak` is updated if the current streak exceeds the previous maximum.
+  - A wrong answer resets the `current_streak` to zero.
+
+- **Bonus Calculation:**  
+  Awards additional points based on the number of correct answers and the current streak multiplier.
+  - Base points are calculated as `new_correct_count * 100`.
+  - A streak bonus is applied by increasing the total points based on the length of the current streak (e.g., a 10% increase per additional consecutive correct answer).
+
+- **Unique Correct Answer Tracking:**  
+  Ensures that virtual currency is awarded only for new correct answers.
+  - The system tracks which questions the user has answered correctly across sessions.
+  - Points are granted only for questions that the user answers correctly for the first time. Subsequent correct answers to the same question in later sessions do not yield additional rewards.
+
+- **Percentile Ranking:**  
+  On session completion, calculates the user’s performance relative to others, expressing it as a percentile.
+  - The system compares the user’s score to those of other users who took the same quiz.
+  - It calculates the percentage of users who scored lower, which is then displayed to the user (e.g., "You scored better than 89% of users on this quiz").
+
+- **Event Handling:**  
+  Upon quiz completion, an event is published to RabbitMQ, triggering balance updates in the Balance Service.
+  - When a session finishes, an event containing the session results is published to the message queue.
+  - The Balance Service listens for this event, processes the quiz completion details, and updates the user’s balance accordingly.
+
+- **Localization Support:**  
+  Quizzes and questions are localized in multiple languages.
+  - Users can receive questions and content in their preferred language.
+  - The system retrieves and serves localized content based on the language code provided in request headers.
+
+- **Question Type Handling:**  
+  The system supports various question types including single choice, multiple choice, fill in the blanks, and matching pairs.
+  - Each question type uses specialized logic for validating answers.
+  - Dedicated endpoints and request schemas handle the submission of answers for different question types, ensuring appropriate processing and feedback.
+
 
 ## Technical Stack
 - **Stack**: FastAPI, PostgreSQL, RabbitMQ, SQLAlchemy, Docker, Alembic
