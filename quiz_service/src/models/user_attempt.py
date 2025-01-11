@@ -1,6 +1,4 @@
 import uuid
-from datetime import datetime
-from typing import List, Optional
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
@@ -25,10 +23,10 @@ class UserAttempt(Base, TimestampMixin):
         sa.ForeignKey("questions.id", ondelete="CASCADE"),
         nullable=False,
     )
-    session_id: so.Mapped[Optional[uuid.UUID]] = so.mapped_column(
+    session_id: so.Mapped[uuid.UUID] = so.mapped_column(
         sa.UUID(as_uuid=True),
         sa.ForeignKey("user_quiz_sessions.id", ondelete="CASCADE"),
-        nullable=True,
+        nullable=False,
     )
 
     answer_content: so.Mapped[dict] = so.mapped_column(
@@ -38,7 +36,7 @@ class UserAttempt(Base, TimestampMixin):
     is_correct: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=False)
 
     question: so.Mapped["Question"] = so.relationship(back_populates="user_attempts")
-    session: so.Mapped[Optional["UserQuizSession"]] = so.relationship(
+    session: so.Mapped["UserQuizSession"]= so.relationship(
         back_populates="attempts"
     )
 

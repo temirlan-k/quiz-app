@@ -47,32 +47,24 @@ QUESTION_CONTENTS = {
             "options": [
                 {"id": "opt1", "text": "6"},
                 {"id": "opt2", "text": "8"},
-                {"id": "opt3", "text": "9"}
+                {"id": "opt3", "text": "9"},
             ]
         },
-        "private_data": {
-            "correct_options": ["opt2"]
-        }
+        "private_data": {"correct_options": ["opt2"]},
     },
     "multiple_choice": {
         "public_data": {
             "options": [
                 {"id": "opt1", "text": "int"},
                 {"id": "opt2", "text": "float"},
-                {"id": "opt3", "text": "decimal"}
+                {"id": "opt3", "text": "decimal"},
             ]
         },
-        "private_data": {
-            "correct_options": ["opt1", "opt2"]
-        }
+        "private_data": {"correct_options": ["opt1", "opt2"]},
     },
     "fill_blank": {
-        "public_data": {
-            "options": ["def", "function", "lambda"]
-        },
-        "private_data": {
-            "correct_answers": ["def"]
-        }
+        "public_data": {"options": ["def", "function", "lambda"]},
+        "private_data": {"correct_answers": ["def"]},
     },
     "matching": {
         "en": {
@@ -81,42 +73,51 @@ QUESTION_CONTENTS = {
                 "shuffled_right": [
                     "Returns the number of items in an object",
                     "Returns a sorted list",
-                    "Returns the type of an object"
-                ]
+                    "Returns the type of an object",
+                ],
             },
             "private_data": {
                 "pairs": [
-                    { "left": "len", "right": "Returns the number of items in an object" },
-                    { "left": "sorted", "right": "Returns a sorted list" },
-                    { "left": "type", "right": "Returns the type of an object" }
+                    {
+                        "left": "len",
+                        "right": "Returns the number of items in an object",
+                    },
+                    {"left": "sorted", "right": "Returns a sorted list"},
+                    {"left": "type", "right": "Returns the type of an object"},
                 ]
-            }
+            },
         },
         "es": {
             "public_data": {
                 "shuffled_left": ["len", "sorted", "type"],
-                "shuffled_right": ["Devuelve el número de elementos en un objeto", "Devuelve una lista ordenada", "Devuelve el tipo de un objeto"]
+                "shuffled_right": [
+                    "Devuelve el número de elementos en un objeto",
+                    "Devuelve una lista ordenada",
+                    "Devuelve el tipo de un objeto",
+                ],
             },
             "private_data": {
                 "pairs": [
-                    {"left": "len", "right": "Devuelve el número de elementos en un objeto"},
+                    {
+                        "left": "len",
+                        "right": "Devuelve el número de elementos en un objeto",
+                    },
                     {"left": "sorted", "right": "Devuelve una lista ordenada"},
-                    {"left": "type", "right": "Devuelve el tipo de un objeto"}
+                    {"left": "type", "right": "Devuelve el tipo de un objeto"},
                 ]
-            }
-        }
-    }
-
-    
+            },
+        },
+    },
 }
+
 
 async def initialize_test_data(session: AsyncSession):
     """Добавление тестовых данных в базу данных."""
-    
+
     # Проверяем, существует ли квиз
     res = await session.execute(select(Quiz).where(Quiz.id == QUIZ_ID))
     exist_quiz = res.scalars().first()
-    
+
     if not exist_quiz:
         # 1. Создаем квиз
         await session.execute(
@@ -248,6 +249,8 @@ async def initialize_test_data(session: AsyncSession):
                 "content": QUESTION_CONTENTS["matching"]["es"],
             },
         ]
-        
-        await session.execute(insert(QuestionLocalization).values(question_localizations))
-        await session.commit() 
+
+        await session.execute(
+            insert(QuestionLocalization).values(question_localizations)
+        )
+        await session.commit()

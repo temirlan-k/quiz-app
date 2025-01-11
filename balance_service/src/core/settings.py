@@ -5,7 +5,6 @@ class Settings:
     app_name: str = "Quiz App"
     debug: bool = True
 
-
     @property
     def async_db_url(self) -> str:
         db_host = os.getenv("DB_HOST")
@@ -13,9 +12,7 @@ class Settings:
         db_user = os.getenv("DB_USER")
         db_password = os.getenv("DB_PASSWORD")
         db_name = os.getenv("DB_NAME")
-        db_url = (
-            f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
-        )
+        db_url = f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
         return "postgresql+asyncpg://balance_user:balance_password@balance_db:5432/balance_db"
 
 

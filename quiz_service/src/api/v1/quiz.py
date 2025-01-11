@@ -9,10 +9,11 @@ from src.services.quiz import QuizService
 
 quiz_router = APIRouter(prefix="/quizzes", tags=["QUIZZES"])
 
+
 @quiz_router.post(
     "/",
     summary="Create a new Quiz with Questions",
-    description="Creates a new quiz along with its questions and localizations based on the provided data."
+    description="Creates a new quiz along with its questions and localizations based on the provided data.",
 )
 @inject
 async def create_quiz_with_questions(
@@ -25,10 +26,11 @@ async def create_quiz_with_questions(
     """
     return await quiz_service.create_quiz(quiz_data.model_dump())
 
+
 @quiz_router.get(
     "/",
     summary="Get a list of Quizzes",
-    description="Retrieves a list of quizzes localized based on the provided language code, with pagination support."
+    description="Retrieves a list of quizzes localized based on the provided language code, with pagination support.",
 )
 @inject
 async def quizzes_list(

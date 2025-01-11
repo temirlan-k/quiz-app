@@ -1,4 +1,3 @@
-
 from dependency_injector.wiring import Provide, inject
 
 from fastapi import APIRouter, Depends, Header
@@ -9,10 +8,11 @@ from src.services.user_quiz_session import UserQuizSessionService
 
 quiz_session_router = APIRouter(prefix="/quiz_sessions", tags=["QUIZ SESSIONS"])
 
+
 @quiz_session_router.post(
     "/{quiz_id}/start-session",
     summary="Start a new quiz session",
-    description="Begins a new session for a given quiz and user."
+    description="Begins a new session for a given quiz and user.",
 )
 @inject
 async def start_session(
@@ -34,7 +34,7 @@ async def start_session(
 @quiz_session_router.get(
     "/{session_id}",
     summary="Get session info",
-    description="Retrieve information about a specific quiz session."
+    description="Retrieve information about a specific quiz session.",
 )
 @inject
 async def get_session_info(
@@ -54,7 +54,7 @@ async def get_session_info(
 @quiz_session_router.post(
     "/{session_id}/finish-session",
     summary="Finish a quiz session",
-    description="Marks the specified quiz session as completed and calculates results."
+    description="Marks the specified quiz session as completed and calculates results.",
 )
 @inject
 async def finish_session(

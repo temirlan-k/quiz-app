@@ -35,9 +35,7 @@ class UserQuizSessionRepository:
         result = await self.session.execute(
             select(UserQuizSession)
             .where(UserQuizSession.id == session_id)
-            .options(
-                joinedload(UserQuizSession.quiz)
-                )
+            .options(joinedload(UserQuizSession.quiz))
         )
         return result.scalars().first()
 
@@ -47,18 +45,21 @@ class UserQuizSessionRepository:
         await self.session.flush()
         return user_quiz_session
 
-
-    async def get_percentile_rank(self,quiz_id:UUID, user_score: float)-> float:
+    async def get_percentile_rank(self, quiz_id: UUID, user_score: float) -> float:
         total_users = await self.session.execute(
-            select(func.count(func.distinct(UserQuizSession.user_id))).where(UserQuizSession.quiz_id == quiz_id)
+            select(func.count(func.distinct(UserQuizSession.user_id))).where(
+                UserQuizSession.quiz_id == quiz_id
+            )
         )
         total_users = total_users.scalar() or 0
-        
+
         lower_users = await self.session.execute(
-            select(func.count(func.distinct(UserQuizSession.user_id))).where(UserQuizSession.quiz_id == quiz_id,UserQuizSession.score<user_score)
+            select(func.count(func.distinct(UserQuizSession.user_id))).where(
+                UserQuizSession.quiz_id == quiz_id, UserQuizSession.score < user_score
+            )
         )
         lower_users = lower_users.scalar() or 0
-        
+
         if total_users == 0:
             return 0.0
         return (lower_users / total_users) * 100

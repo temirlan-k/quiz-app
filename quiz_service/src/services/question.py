@@ -9,6 +9,7 @@ from src.core.enums import LanguageCode
 
 logger = logging.getLogger(__name__)
 
+
 class QuestionService:
     def __init__(self, uow: UnitOfWork):
         self._uow = uow

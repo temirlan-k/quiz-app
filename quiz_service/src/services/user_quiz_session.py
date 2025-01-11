@@ -17,7 +17,7 @@ class UserQuizSessionService:
         self._uow = uow
         self.publisher = publisher
 
-    async def start_quiz_session(self, quiz_id: UUID, user_id: UUID)->UserQuizSession:
+    async def start_quiz_session(self, quiz_id: UUID, user_id: UUID) -> UserQuizSession:
         async with self._uow as uow:
             try:
                 total_questions = await uow.question_repo.count_questions(quiz_id)
@@ -25,7 +25,7 @@ class UserQuizSessionService:
                     {
                         "user_id": user_id,
                         "quiz_id": quiz_id,
-                        "total_questions":total_questions
+                        "total_questions": total_questions,
                     }
                 )
                 await uow.commit()
@@ -53,17 +53,19 @@ class UserQuizSessionService:
                 user_quiz_session.is_completed = True
                 user_quiz_session.ended_at = datetime.now()
                 quiz_id = user_quiz_session.quiz_id
-                user_score = user_quiz_session.score 
+                user_score = user_quiz_session.score
                 current_streak = user_quiz_session.current_streak
 
-                percentile = await uow.user_quiz_session_repo.get_percentile_rank(quiz_id, user_score)
+                percentile = await uow.user_quiz_session_repo.get_percentile_rank(
+                    quiz_id, user_score
+                )
                 response = {
                     "event_type": EventType.QUIZ_COMPLETED.value,
                     "session_id": str(session_id),
                     "user_id": str(user_id),
-                    "current_streak": current_streak ,
-                    "percentile":percentile,
-                    "score":user_quiz_session.score,
+                    "current_streak": current_streak,
+                    "percentile": percentile,
+                    "score": user_quiz_session.score,
                     "new_correct_answers": new_correct_question_count,
                 }
                 await self.publisher.publish_event(event_payload=response)
@@ -77,7 +79,7 @@ class UserQuizSessionService:
     async def get_session_info(
         self,
         session_id: UUID,
-    )-> UserQuizSession:
+    ) -> UserQuizSession:
         async with self._uow as uow:
             try:
                 session = await uow.user_quiz_session_repo.get_by_id(session_id)
@@ -90,7 +92,7 @@ class UserQuizSessionService:
 
     async def _calculate_correct_questions(
         self, uow: UnitOfWork, session_id: UUID, user_id: UUID
-    )-> int:
+    ) -> int:
         correct_attempts = await uow.user_attempt_repo.get_correct_attempts_in_session(
             session_id=session_id, user_id=user_id
         )

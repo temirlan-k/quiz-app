@@ -12,7 +12,7 @@ class UserQuizSession(Base):
     __tablename__ = "user_quiz_sessions"
 
     id: so.Mapped[uuid.UUID] = so.mapped_column(
-        sa.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4,index=True
+        sa.UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True
     )
     user_id: so.Mapped[uuid.UUID] = so.mapped_column(
         sa.UUID(as_uuid=True), nullable=False
@@ -22,17 +22,9 @@ class UserQuizSession(Base):
         sa.ForeignKey("quizzes.id", ondelete="CASCADE"),
         nullable=False,
     )
-    current_streak: so.Mapped[int] = so.mapped_column(
-        sa.Integer,
-        default=0
-    )
-    max_streak: so.Mapped[int] = so.mapped_column(
-        sa.Integer,
-        default=0
-    )
-    score: so.Mapped[int] = so.mapped_column(
-        sa.Integer, default=0, nullable=False
-    )
+    current_streak: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
+    max_streak: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
+    score: so.Mapped[int] = so.mapped_column(sa.Integer, default=0, nullable=False)
     total_questions: so.Mapped[int] = so.mapped_column(
         sa.Integer, default=0, nullable=False
     )

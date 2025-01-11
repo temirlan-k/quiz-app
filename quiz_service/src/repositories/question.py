@@ -59,6 +59,8 @@ class QuestionRepository:
 
     async def count_questions(self, quiz_id: UUID) -> int:
         result = await self.session.execute(
-            select(func.count()).select_from(Question).where(Question.quiz_id == quiz_id)
+            select(func.count())
+            .select_from(Question)
+            .where(Question.quiz_id == quiz_id)
         )
         return result.scalar_one() or 0

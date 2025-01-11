@@ -7,7 +7,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.models.balance import Balance
 
 
-
 class BalanceRepository:
     def __init__(self, session: AsyncSession):
         self.session = session

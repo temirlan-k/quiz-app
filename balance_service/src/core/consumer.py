@@ -47,10 +47,13 @@ class Consumer:
                 await self.balance_service.process_quiz_completion(
                     user_id=UUID(user_id_str),
                     correct_count=new_correct_answers,
-                    current_streak=current_streak
+                    current_streak=current_streak,
                 )
                 await self.channel.basic_ack(message.delivery.delivery_tag)
-                logger.info("Successfully processed and acknowledged message: %s", message.delivery.delivery_tag)
+                logger.info(
+                    "Successfully processed and acknowledged message: %s",
+                    message.delivery.delivery_tag,
+                )
             else:
                 logger.warning("Received unknown event_type: %s", event_type)
                 await self.channel.basic_ack(message.delivery.delivery_tag)

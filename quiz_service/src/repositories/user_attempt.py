@@ -9,7 +9,6 @@ from src.core.enums import LanguageCode
 from src.models.user_attempt import UserAttempt
 
 
-
 class UserAttemptRepository:
 
     def __init__(self, session: AsyncSession):

@@ -9,8 +9,6 @@ from src.core.enums import LanguageCode
 from src.models.quiz import Quiz, QuizLocalization
 
 
-
-
 class QuizRepository:
 
     def __init__(self, session: AsyncSession) -> None:
@@ -47,4 +45,3 @@ class QuizRepository:
         self.session.add(quiz_localization)
         await self.session.flush()
         return quiz_localization
-

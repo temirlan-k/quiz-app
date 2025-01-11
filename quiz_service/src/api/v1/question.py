@@ -6,7 +6,11 @@ from pydantic import UUID4
 
 from src.core.containers import Container
 from src.core.enums import LanguageCode
-from src.schemas.requests.question import QuestionCreateRequest,AnswerQuestionStandard,AnswerQuestionMatching
+from src.schemas.requests.question import (
+    QuestionCreateRequest,
+    AnswerQuestionStandard,
+    AnswerQuestionMatching,
+)
 from src.services.question import QuestionService
 from src.services.user_answer import AnswerService
 
@@ -16,7 +20,7 @@ question_router = APIRouter(prefix="/questions", tags=["QUESTIONS"])
 @question_router.post(
     "/{quiz_id}/add",
     summary="Add Questions to a Quiz",
-    description="Create and add new questions to the specified quiz by quiz_id."
+    description="Create and add new questions to the specified quiz by quiz_id.",
 )
 @inject
 async def create_quiz_question(
@@ -35,7 +39,7 @@ async def create_quiz_question(
 @question_router.get(
     "/{quiz_id}",
     summary="Get Questions for a Quiz",
-    description="Retrieve a list of questions for the specified quiz, localized by language code provided in the header."
+    description="Retrieve a list of questions for the specified quiz, localized by language code provided in the header.",
 )
 @inject
 async def get_questions(
@@ -54,7 +58,7 @@ async def get_questions(
 @question_router.post(
     "/{question_id}/answer",
     summary="Answer a Standard Question",
-    description="Submit an answer for a standard question (e.g., Single Choice, Multiple Choice, Fill in the Blank)."
+    description="Submit an answer for a standard question (e.g., Single Choice, Multiple Choice, Fill in the Blank).",
 )
 @inject
 async def answer_to_question(
@@ -79,7 +83,7 @@ async def answer_to_question(
 @question_router.post(
     "/{question_id}/answer-matching",
     summary="Answer a Matching Question",
-    description="Submit an answer for a matching question. All pairs must be provided."
+    description="Submit an answer for a matching question. All pairs must be provided.",
 )
 @inject
 async def answer_to_question_matching(
