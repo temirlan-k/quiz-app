@@ -131,8 +131,8 @@ Follow these steps to initiate a quiz session, answer questions, and complete th
            "question_type": "SINGLE_CHOICE",
            "question_text": "What is 2+2?",
            "content": {
-             "public_data": ["opt", "4", "5"],
-             "private_data": {"correct_options": ["4"]}
+             "public_data": {"options": [{"id": "opt1", "text": "6"}, {"id": "opt2", "text": "4"}, {"id": "opt3", "text": "9"}]},
+             "private_data": {"correct_options": ["opt2"]}
            }
          },
          {
