@@ -1,11 +1,9 @@
-from abc import ABC, abstractmethod
-from typing import List, Protocol
+from typing import List
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.enums import LanguageCode
 from src.models.quiz import Quiz, QuizLocalization
 
 
@@ -23,7 +21,7 @@ class QuizRepository:
         language_code: str,
         offset: int = 0,
         limit: int = 10,
-    ) -> List[Quiz]:
+    ) -> List[QuizLocalization]:
         result = await self.session.execute(
             select(QuizLocalization)
             .where(QuizLocalization.language == language_code)

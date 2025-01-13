@@ -10,7 +10,7 @@ quiz_session_router = APIRouter(prefix="/quiz_sessions", tags=["QUIZ SESSIONS"])
 
 
 @quiz_session_router.post(
-    "/{quiz_id}/start-session",
+    "/start-session/{quiz_id}",
     summary="Start a new quiz session",
     description="Begins a new session for a given quiz and user.",
 )
@@ -52,7 +52,7 @@ async def get_session_info(
 
 
 @quiz_session_router.post(
-    "/{session_id}/finish-session",
+    "/finish-session/{session_id}",
     summary="Finish a quiz session",
     description="Marks the specified quiz session as completed and calculates results.",
 )

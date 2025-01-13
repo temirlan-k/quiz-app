@@ -30,9 +30,10 @@ Welcome to the Quiz APP! This project is a microservice-based application design
   - The Balance Service listens for this event, processes the quiz completion details, and updates the user’s balance accordingly.
 
 - **Localization Support:**  
-  Quizzes and questions are localized in multiple languages.
+  Quizzes and questions are localized in multiple languages (EN, ES, PT, DE, TR, FR).
   - Users can receive questions and content in their preferred language.
   - The system retrieves and serves localized content based on the language code provided in request headers.
+  - Quiz localization in Test DB is available in 2 languages(EN, ES)
 
 - **Question Type Handling:**  
   The system supports various question types including single choice, multiple choice, fill in the blanks, and matching pairs.
@@ -50,16 +51,16 @@ Welcome to the Quiz APP! This project is a microservice-based application design
 - `POST /quizzes`: Create a new quiz
 
 ### Question Endpoints
-- `POST questions/{quiz_id}/add`: Add Questions to a Quiz
-- `GET questions/{quiz_id}`: Get Questions for a Quiz`
+- `POST /questions/{quiz_id}/add`: Add Questions to a Quiz
+- `GET /questions/{quiz_id}`: Get Questions for a Quiz`
 Question
 ### Answer Endpoints
-- `POST questions/{question_id}/answer`: Answer a Standard Question
-- `POST questions/{question_id}/answer-matching`: Answer a Matching  
+- `POST /questions/{question_id}/answer`: Answer a Standard Question
+- `POST /questions/{question_id}/answer-matching`: Answer a Matching  
 ### Quiz Sessions Endpoints
-- `POST /quiz_sessions/{quiz_id}/start-session`: Start Quiz session
-- `GET quiz_sessions/{session_id}`: Get session info
-- `POST quiz_sessions/{session_id}/finish-session` Finish a quiz session
+- `POST /quiz_sessions/start-session/{quiz_id}`: Start Quiz session
+- `GET /quiz_sessions/{session_id}`: Get session info
+- `POST /quiz_sessions/finish-session/{session_id}` Finish a quiz session
 
 
 ### Balance Service Endpoints - http://127.0.0.1:9001/docs
@@ -256,4 +257,7 @@ Follow these steps to initiate a quiz session, answer questions, and complete th
 
 
 ## ERD - Quiz Service
-![alt text](image.png)
+![alt text](erd_quiz.png)
+
+## ERD - Balance Service
+![alt text](erd_balance.png)

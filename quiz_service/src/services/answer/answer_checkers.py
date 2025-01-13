@@ -69,7 +69,7 @@ class MatchingChecker(IAnswerChecker):
                 correct_pairs
             )
         except Exception as e:
-            raise BadRequestException("INTERNAL")
+            raise e
 
     def _normalize_pairs(self, pairs):
         return {

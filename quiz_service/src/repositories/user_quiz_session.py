@@ -1,12 +1,10 @@
-from abc import ABC, abstractmethod
-from typing import List, Protocol
+from typing import List
 from uuid import UUID
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from src.core.enums import LanguageCode
 from src.models.quiz_session import UserQuizSession
 
 

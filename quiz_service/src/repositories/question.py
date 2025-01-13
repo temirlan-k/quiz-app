@@ -1,5 +1,4 @@
-from abc import ABC, abstractmethod
-from typing import List, Protocol
+from typing import List
 from uuid import UUID
 
 from sqlalchemy import func, select

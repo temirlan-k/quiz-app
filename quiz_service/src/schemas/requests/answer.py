@@ -10,7 +10,7 @@ class AnswerRequest(BaseModel):
     answer_content: Dict[str, Any]
 
     class Config:
-        schema_example = {
+        json_schema_extra = {
             {
                 "session_id": "120184c6-5773-42aa-806a-75aa5f77fdba",
                 "answer_content": {"selected_options": ["opt1"]},

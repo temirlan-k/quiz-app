@@ -20,7 +20,7 @@ class Quiz(Base, TimestampMixin):
         "Question", back_populates="quiz", cascade="all, delete-orphan"
     )
     localizations = so.relationship(
-        "QuizLocalization", back_populates="quiz", cascade="all, delete-orphan"
+        "QuizLocalization", back_populates="quiz", cascade="all, delete-orphan",lazy='joined'
     )
     sessions = so.relationship("UserQuizSession", back_populates="quiz")
 

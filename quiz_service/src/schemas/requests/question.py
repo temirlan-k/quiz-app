@@ -42,7 +42,7 @@ class QuestionCreateRequest(BaseModel):
     localizations: List[QuestionLocalization]
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "question_type": "MATCHING",
                 "localizations": [
@@ -86,7 +86,7 @@ class QuestionCreateRequest(BaseModel):
     localizations: List[QuestionLocalization]
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example1": {
                 "question_type": "EN",
                 "content": {
@@ -122,7 +122,7 @@ class AnswerQuestionStandard(BaseModel):
     answer_content: SelectedOption
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "session_id": "120184c6-5773-42aa-806a-75aa5f77fdba",
                 "answer_content": {"selected_option": ["opt1", "opt2"]},
@@ -143,7 +143,7 @@ class AnswerQuestionMatching(BaseModel):
     answer_content: MatchingSelectedOption
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "session_id": "120184c6-5773-42aa-806a-75aa5f77fdba",
                 "answer_content": {

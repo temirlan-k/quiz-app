@@ -177,3 +177,4 @@ pyrightconfig.json
 
 
 .user_service/
+tests/

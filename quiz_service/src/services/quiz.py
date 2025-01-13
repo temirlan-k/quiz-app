@@ -35,4 +35,12 @@ class QuizService:
             quizzes = await uow.quizzes_repo.get_all(
                 x_language_code.value, offset, limit
             )
-            return {"quizzes": quizzes, "count": len(quizzes)}
+            return {"quizzes": [
+                {
+                    'quiz_id':q.quiz_id,
+                    'language':q.language,
+                    'title':q.title,
+                    'description':q.description
+                }
+                for q in quizzes
+            ], "count": len(quizzes)}

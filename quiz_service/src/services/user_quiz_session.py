@@ -29,7 +29,11 @@ class UserQuizSessionService:
                     }
                 )
                 await uow.commit()
-                return new_session
+                return {
+                    'session_id':new_session.id,
+                    'total_questions':new_session.total_questions,
+                    'is_completed':new_session.is_completed
+                }
             except Exception as e:
                 logger.error(f"Error starting quiz session: {e}", exc_info=True)
                 await uow.rollback()
