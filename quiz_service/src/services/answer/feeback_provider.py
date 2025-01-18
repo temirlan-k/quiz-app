@@ -16,7 +16,7 @@ class SingleChoiceFeedbackProvider(IFeedbackProvider):
         public_data = question_l.content.get("public_data", {})
 
         correct_option_ids = private_data.get("correct_options", [])
-
+        print(correct_option_ids)
         options = public_data.get("options", [])
         correct_options = [
             option["text"] for option in options if option["id"] in correct_option_ids
@@ -26,18 +26,30 @@ class SingleChoiceFeedbackProvider(IFeedbackProvider):
 
 class MultipleChoiceFeedbackProvider(IFeedbackProvider):
     def generate_feedback(self, question_l: QuestionLocalization) -> str:
-        correct_options = question_l.content.get("private_data", {}).get(
+        private_data = question_l.content.get("private_data", {})
+        public_data = question_l.content.get("public_data", {})
+
+
+        correct_options = private_data.get(
             "correct_options", []
         )
+        options = public_data.get("options", [])
+        correct_options = [
+            option["text"] for option in options if option["id"] in correct_options
+        ]
         return f"Wrong! Correct option(s): {', '.join(correct_options)}"
 
 
 class FillBlankFeedbackProvider(IFeedbackProvider):
     def generate_feedback(self, question_l: QuestionLocalization) -> str:
-        correct_answers = question_l.content.get("private_data", {}).get(
-            "correct_answers", []
-        )
-        return f"Wrong! Correct answer(s): {', '.join(correct_answers)}"
+        private_data = question_l.content.get("private_data", {})
+        public_data = question_l.content.get("public_data", {})
+        correct_options = private_data.get('correct_answers')
+        options = public_data.get('options')
+        correct_values = [
+          option  for option in options if option in correct_options
+        ]
+        return f"Wrong! Correct answer(s): {', '.join(correct_values)}"
 
 
 class MatchingFeedbackProvider(IFeedbackProvider):
@@ -60,7 +72,6 @@ class FeedbackProviderFactory:
     @classmethod
     def get_provider(cls, question_type: QuestionType) -> IFeedbackProvider:
         provider = cls._providers.get(question_type)
-        print(provider)
         if not provider:
             raise ValueError(f"No feedback provider for question type: {question_type}")
         return provider

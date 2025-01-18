@@ -18,7 +18,7 @@ question_router = APIRouter(prefix="/questions", tags=["QUESTIONS"])
 
 
 @question_router.post(
-    "/{quiz_id}/add",
+    "/add/{quiz_id}",
     summary="Add Questions to a Quiz",
     description="Create and add new questions to the specified quiz by quiz_id.",
 )

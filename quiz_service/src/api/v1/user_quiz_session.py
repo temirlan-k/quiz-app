@@ -3,6 +3,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Header
 from pydantic import UUID4
 
+from src.core.enums import LanguageCode
 from src.core.containers import Container
 from src.services.user_quiz_session import UserQuizSessionService
 
@@ -39,6 +40,7 @@ async def start_session(
 @inject
 async def get_session_info(
     session_id: UUID4,
+    x_language_code:LanguageCode = Header(...), 
     quiz_session_service: UserQuizSessionService = Depends(
         Provide[Container.quiz_session_service]
     ),
@@ -48,7 +50,7 @@ async def get_session_info(
 
     - **session_id**: UUID of the quiz session to retrieve.
     """
-    return await quiz_session_service.get_session_info(session_id)
+    return await quiz_session_service.get_session_info(session_id,x_language_code)
 
 
 @quiz_session_router.post(

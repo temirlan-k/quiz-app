@@ -1,0 +1,71 @@
+{
+  "version": 3,
+  "name": "QUIZ APP API Gateway",
+  "port": 8080,
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "endpoints": [
+    {
+      "endpoint": "/api/v1/quizzes",
+       "extra_config": {
+        "qos/ratelimit/router": {
+          "max_rate": 50,
+          "every": "10m",
+          "client_max_rate": 5,
+
+          "strategy": "ip",
+          "capacity": 50,
+          "client_capacity": 5
+        }
+        },
+      "method": "POST",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/v1/quizzes/",
+          "host": ["quiz_service:9000"]
+        }
+      ]
+      
+    },
+    {
+      "endpoint": "/api/v1/quizzes",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/v1/quizzes/",
+          "host": ["quiz_service:9000"]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/my-balance",
+      "method": "GET",
+      "output_encoding": "json",
+      "input_headers": ["x-user-id"],
+      "headers_to_pass": ["x-user-id"],
+      "backend": [
+        {
+          "url_pattern": "/api/v1/my-balance",
+          "encoding": "json",
+          "method": "GET",
+          "host": ["balance_service:9001"]
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/update",
+      "method": "POST",
+      "input_headers": ["x-user-id"],
+      "headers_to_pass": ["x-user-id"],
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/v1/update",
+          "host": ["balance_service:9001"]
+        }
+      ]
+    }
+  ]
+}

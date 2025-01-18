@@ -62,4 +62,4 @@ class QuestionRepository:
             .select_from(Question)
             .where(Question.quiz_id == quiz_id)
         )
-        return result.scalar_one() or 0
+        return result.scalar_one_or_none() or 0

@@ -49,6 +49,5 @@ class QuizLocalization(Base):
     )
 
     def __repr__(self) -> str:
-        return (
-            f"<QuizLocalization id={self.id} quiz={self.quiz_id} lang={self.language}>"
-        )
+        return f"<QuizLocalization id={self.id} quiz={self.quiz_id} lang={self.language}>"
+    

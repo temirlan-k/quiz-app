@@ -52,7 +52,7 @@ class UserAttemptRepository:
         user_id: UUID,
         question_id: UUID,
         session_id: UUID,
-    ):
+    )->UserAttempt:
         result = await self.session.execute(
             select(UserAttempt).where(
                 and_(

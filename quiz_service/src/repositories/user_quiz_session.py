@@ -3,9 +3,10 @@ from uuid import UUID
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload,selectinload
 
 from src.models.quiz_session import UserQuizSession
+from src.models.quiz import QuizLocalization,Quiz
 
 
 class UserQuizSessionRepository:
@@ -29,12 +30,14 @@ class UserQuizSessionRepository:
         )
         return result.scalars().all()
 
-    async def get_by_id(self, session_id: UUID) -> UserQuizSession | None:
+    async def get_by_id(self, session_id: UUID ) -> UserQuizSession | None:
         result = await self.session.execute(
             select(UserQuizSession)
+            .options(
+                joinedload(UserQuizSession.quiz)
+            )
             .where(UserQuizSession.id == session_id)
-            .options(joinedload(UserQuizSession.quiz))
-        )
+        )      
         return result.scalars().first()
 
     async def create(self, attributes: dict) -> UserQuizSession:

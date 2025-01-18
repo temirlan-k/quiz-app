@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from uuid import UUID
 
-from src.core.enums import EventType
+from src.core.enums import EventType, LanguageCode
 from src.core.exceptions import BadRequestException, NotFoundException
 from src.core.uow import UnitOfWork
 from src.services.rabbit_mq import RMQEventPublisher

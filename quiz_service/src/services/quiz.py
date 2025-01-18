@@ -35,6 +35,7 @@ class QuizService:
             quizzes = await uow.quizzes_repo.get_all(
                 x_language_code.value, offset, limit
             )
+            print(quizzes)
             return {"quizzes": [
                 {
                     'quiz_id':q.quiz_id,

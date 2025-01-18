@@ -77,6 +77,18 @@ services:
     networks:
       - quiz-net
 
+  krakend:
+    image: devopsfaith/krakend:2.1
+    ports:
+      - "9999:8080"
+    volumes:
+      - ./krakend/krakend.json:/etc/krakend/krakend.json
+    networks:
+      - quiz-net
+    depends_on:
+      - quiz_service
+      - balance_service
+
 
 
 volumes:
