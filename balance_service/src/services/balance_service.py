@@ -40,7 +40,7 @@ class BalanceService:
         async with self._uow as uow:
             try:
                 balance = await uow.balance_repo.get_balance(user_id)
-
+                
                 if balance is None:
                     await uow.balance_repo.create(
                         {"user_id": user_id, "balance": amount}
@@ -51,4 +51,4 @@ class BalanceService:
                 await uow.commit()
             except Exception as e:
                 await uow.rollback()
-                raise e
+                raise e 
